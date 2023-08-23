@@ -1,10 +1,11 @@
 import React, { createContext, ReactNode, useContext, useState } from "react";
 
 // types
-type Toast = "open" | "close";
+type Open = boolean;
 export type ToastContextType = {
-  toast: Toast;
-  toggleToast: () => void;
+    open: Open;
+    hideToast: () => void;
+    showToast: () => void;
 };
 export type ToastProviderProps = {
   children: ReactNode;
@@ -22,13 +23,13 @@ export const useToast = () => {
 
 //provider
 export const ToastProvider: React.FC<ToastProviderProps> = ({ children }) => {
-  const [toast, setToast] = useState<Toast>("close");
-  const toggleToast = () => {
-    setToast((prev) => (prev === "close" ? "open" : "close"));
-  };
-  return (
-    <ToastContext.Provider value={{ toast, toggleToast }}>
-      {children}
-    </ToastContext.Provider>
-  );
+    const [open , setOpen] = useState(false)
+    const hideToast: () => void = () => { setOpen(() => (false));  }
+
+    const showToast: () => void = () => { setOpen(() => (true));  }
+    return (
+        <ToastContext.Provider value={{ open, hideToast, showToast }}>
+        {children}
+        </ToastContext.Provider>
+    );
 };

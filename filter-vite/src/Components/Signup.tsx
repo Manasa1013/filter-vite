@@ -31,7 +31,7 @@ export function Signup() {
         email: "",
         phoneNumber : ""
     })
-    const { toggleToast } = useToast();
+    const { showToast } = useToast();
     useEffect(() => {
         if (localStorage.getItem("formObject")) {
             const formObjectFromLocalStorage = JSON.parse(localStorage?.getItem("formObject"));
@@ -45,14 +45,17 @@ export function Signup() {
         
     }
     
-    const handleSubmit  : (event : React.FormEvent<HTMLFormElement> ) => void = (event) => {
+    const handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void = (event) => {
         event.preventDefault();
         if (formObject?.username.length === 0 || formObject?.email.length === 0 || formObject?.phoneNumber.length === 0) {
-            toggleToast();;
+            showToast();
         }
-        saveFormObjectToLocalStorage();
-        getFormObjectFromLocalStorage();
-    };
+        else {
+            
+            saveFormObjectToLocalStorage();
+            getFormObjectFromLocalStorage();
+        }
+    }
     
 
     return (
