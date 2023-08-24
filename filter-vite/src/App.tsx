@@ -29,7 +29,7 @@ function App() {
           <Route path="*" element={<Signup />}></Route>
           <Route path="/redirect" element={<Redirect />}></Route>
         </Routes>
-        <Toast message={"Error at fields"} />
+        <Toast message={"Something is wrong,Try again"} />
 
       </div>
     </>

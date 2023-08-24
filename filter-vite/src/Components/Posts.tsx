@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
-import {Box} from '@mui/material';
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import {Box , Checkbox , FormControlLabel} from '@mui/material';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 import { useToast } from "../Contexts/ToastContext";
+import { newDepartments , DepartmentInterface} from "../Data/Data";
+
 
 export interface PostObjectInterface {
     userId: number,
@@ -16,21 +18,33 @@ export interface PostListInterface {
 }
 export const Posts = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isError, setIsError] = useState<boolean>(false);
     const [posts, setPosts] = useState<PostObjectInterface[]>([]);
+    const [departments] = useState<DepartmentInterface[]>([...newDepartments])
+    const [checked, setChecked] = useState<boolean[]>([false, false]);
     const { showToast } = useToast();
     const API_URL = "https://jsonplaceholder.typicode.com/posts";
+   
+    // TODO : set types for async function 
     const fetchPosts = async () => {
 
         try {
             setIsLoading(() => true)
-            const data = await fetch(API_URL);
-            const response = await data.json();
-            if (response?.length >0) {
-                setPosts(() => response)
+            const response = await fetch(API_URL);
+            if (response.status === 200) {
+                const data = await response.json();
+                if (data?.length > 0) {
+                    setIsError(() => false)
+                    setPosts(() => data)
+                }
             }
-             console.log(response)
+            else if (response.status === 404) {
+                setIsError(() => true)
+            }
+            console.log({ response })
         } catch (err) {
             console.error("Error at fetching posts", err);
+            setIsError(() => true)
             showToast();
         }
         finally {
@@ -39,76 +53,130 @@ export const Posts = () => {
     }
     useEffect(() => {
         fetchPosts();
+        console.log(departments)
     }, []);
     
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', width: 90 },
-  {
-    field: 'firstName',
-    headerName: 'First name',
-    width: 150,
-    editable: true,
-  },
-  {
-    field: 'lastName',
-    headerName: 'Last name',
-    width: 150,
-    editable: true,
-  },
-  {
-    field: 'age',
-    headerName: 'Age',
-    type: 'number',
-    width: 110,
-    editable: true,
-  },
-  {
-    field: 'fullName',
-    headerName: 'Full name',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    width: 160,
-    valueGetter: (params: GridValueGetterParams) =>
-      `${params.row.firstName || ''} ${params.row.lastName || ''}`,
-  },
-];
 
-const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-];
+  const handleChange1 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked([event.target.checked, event.target.checked]);
+  };
+
+  const handleChange2 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked([event.target.checked, checked[1]]);
+  };
+
+  const handleChange3 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked([checked[0], event.target.checked]);
+  };
+    // const handleChange = (event: React.ChangeEvent<HTMLInputElement> , id: string) => {
+
+    //     setDepartments(prev => {
+    //         return prev.map(depItem => {
+    //             return depItem.reduce((acc,curr) => {},[])
+    //         })
+    //     })
+    // }
+
+  const children = (
+    <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
+      <FormControlLabel
+        label="Child 1"
+              control={<Checkbox checked={checked[0]} onChange={(e) => {
+                  //   const id = "Child 1";
+                  //   handleChange(e, id);
+                  handleChange2(e);
+              }} />}
+      />
+      <FormControlLabel
+        label="Child 2"
+        control={<Checkbox checked={checked[1]} onChange={handleChange3} />}
+      />
+    </Box>
+    );
+    
+ const columns: GridColDef[] = [
+  { field: 'id', headerName: 'ID', width: 60 },
+  {
+    field: 'userId',
+    headerName: 'User ID',
+    width: 60,
+    editable: false,
+  },
+  {
+    field: 'title',
+    headerName: 'Title',
+    width: 250,
+    editable: false,
+  },
+  {
+    field: 'body',
+    headerName: 'Body',
+    width: 400,
+    editable: false,
+  }
+  
+    ];
+
+  
 
     return (
         <>
-            <h2>This is Posts</h2>
+            <div>
+                <FormControlLabel
+                    label="Parent"
+                    control={
+                    <Checkbox
+                        checked={checked[0] && checked[1]}
+                        indeterminate={checked[0] !== checked[1]}
+                        onChange={handleChange1}
+                    />
+                    }
+                />
+                {children}
+            </div>
             {
-                isLoading ? <h2>Loading...</h2> : <ul>{posts?.map(post => (<li key={post?.id}>{post?.title}</li>))}</ul>
+                isLoading ? (<h2>Loading...</h2>) : (
+                    isError ? (<h2>Error at displaying posts</h2>) : (
+                        <>
+                        <h2>Posts</h2>
+                        <Box sx={{ height: 400, width: '100%' }}>
+                            <DataGrid
+                                rows={posts}
+                                columns={columns}
+                                initialState={{
+                                pagination: {
+                                    paginationModel: {
+                                    pageSize: 5,
+                                    },
+                                },
+                                }}
+                                pageSizeOptions={[5]}
+                                checkboxSelection
+                                disableRowSelectionOnClick
+                            />
+                        </Box>
+                     </>
+                    )
+                )
             }
-
-    <Box sx={{ height: 400, width: '100%' }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 5,
-            },
-          },
-        }}
-        pageSizeOptions={[5]}
-        checkboxSelection
-        disableRowSelectionOnClick
-      />
-    </Box>
 
         </>
     )
 }
+
+// export const SubDepartment: React.FC<Sub_DepInterface[]> = ({ sub_deps }) => {
+//     return (
+//         <>
+//             <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
+//                 <FormControlLabel
+//                     label="Child 1"
+//                     control={<Checkbox checked={checked[0]} onChange={handleChange2} />}
+//                 />
+//                 <FormControlLabel
+//                     label="Child 2"
+//                     control={<Checkbox checked={checked[1]} onChange={handleChange3} />}
+//                 />
+//             </Box>
+//         </>
+//     )
+// }
