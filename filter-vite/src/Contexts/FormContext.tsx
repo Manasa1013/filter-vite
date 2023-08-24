@@ -44,6 +44,7 @@ export const FormProvider: React.FC<FormProviderProps> = ({ children }) => {
     setFormObject(() => form);
 }
     const getFormObjectFromLocalStorage : () => UserObject | string = () => {
+        // TODO : remove log statements
         console.log(localStorage?.getItem("formObject"));
         return JSON.parse(localStorage?.getItem("formObject") || "");
     }

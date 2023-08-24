@@ -10,7 +10,8 @@ export interface ToastProps {
 export const Toast : React.FC<ToastProps>  = ({ message }) => {
     const { open,  hideToast } = useToast();
 
-  // const handleClick : () => void = () => {
+  // TODO : remove unused functions
+  // const handleClick = () => {
   //     showToast();
   // };
 

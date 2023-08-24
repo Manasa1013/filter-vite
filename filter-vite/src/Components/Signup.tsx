@@ -10,10 +10,13 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import { useToast } from '../Contexts/ToastContext';
 import { FormElements, useForm } from '../Contexts/FormContext';
 //interface for form element
+
+const defaultTheme = createTheme();
 
 // TODO : set validations for every field and regex for each
 export const Signup = () => {
@@ -23,7 +26,7 @@ export const Signup = () => {
     const { formObject, saveFormObject, resetFormValues,saveFormObjectToLocalStorage, getFormObjectFromLocalStorage } = useForm();
     const { showToast } = useToast();
 
-    const handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void = (event) => {
+    const handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void = (event : React.SyntheticEvent | Event) => {
         event.preventDefault();
         if (formObject?.username.length === 0 || formObject?.email.length === 0 || formObject?.phoneNumber.length === 0) {
             showToast();
@@ -45,6 +48,8 @@ export const Signup = () => {
 
     },[])
     return (
+        
+    <ThemeProvider theme={defaultTheme}>
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <Box
@@ -126,5 +131,6 @@ export const Signup = () => {
                     </Box>
                 </Box>
             </Container>
+        </ThemeProvider>
     );
 }
