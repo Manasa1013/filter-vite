@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, {  useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
 
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -11,53 +12,38 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 
 import { useToast } from '../Contexts/ToastContext';
+import { FormElements, useForm } from '../Contexts/FormContext';
 //interface for form element
-export interface FormElements {
-    userObject: {
-        username: string,
-        email : string,
-        phoneNumber : string
-    }
-}
-// TODO : set validations for every field and regex for each
-export function Signup() {
-    
-    const getFormObjectFromLocalStorage : () => FormElements["userObject"] | string = () => {
-        console.log(localStorage?.getItem("formObject"));
-        return localStorage.getItem("formObject") ? JSON.parse(localStorage?.getItem("formObject")) : null
-    }
-    const [formObject, setFormObject] = useState<FormElements["userObject"]>({
-        username: "",
-        email: "",
-        phoneNumber : ""
-    })
-    const { showToast } = useToast();
-    useEffect(() => {
-        if (localStorage.getItem("formObject")) {
-            const formObjectFromLocalStorage = JSON.parse(localStorage?.getItem("formObject"));
-            setFormObject(() => (formObjectFromLocalStorage));
-        }
 
-    },[])
-    const saveFormObjectToLocalStorage : () => void = () => {
-        const objectToBeSavedToLS = { ...formObject };
-        localStorage.setItem("formObject", JSON.stringify(objectToBeSavedToLS));
-        
-    }
-    
+// TODO : set validations for every field and regex for each
+export const Signup = () => {
+
+    const navigate = useNavigate();
+
+    const { formObject, saveFormObject, resetFormValues,saveFormObjectToLocalStorage, getFormObjectFromLocalStorage } = useForm();
+    const { showToast } = useToast();
+
     const handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void = (event) => {
         event.preventDefault();
         if (formObject?.username.length === 0 || formObject?.email.length === 0 || formObject?.phoneNumber.length === 0) {
             showToast();
         }
         else {
-            
+            navigate("/posts");
+            resetFormValues();
             saveFormObjectToLocalStorage();
             getFormObjectFromLocalStorage();
         }
     }
     
+    
+    useEffect(() => {
+        if (localStorage.getItem("formObject")) {
+            const formObjectFromLocalStorage =  JSON.parse(localStorage?.getItem("formObject") || "" )
+            saveFormObject(formObjectFromLocalStorage)
+        }
 
+    },[])
     return (
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
@@ -87,8 +73,9 @@ export function Signup() {
                                     label="Name"
                                     autoFocus
                                     value={formObject?.username}
-                                    onChange={(event) => {
-                                        setFormObject((prev) => ({...prev, username : event.target.value}))
+                                onChange={(event) => {
+                                    const newFormObject: FormElements["userObject"] = { ...formObject, username: event.target.value };
+                                    saveFormObject(newFormObject);
                                     }}
                                 />
                             </Grid>
@@ -102,8 +89,10 @@ export function Signup() {
                                     name="email"
                                     autoComplete="email"
                                     value={formObject?.email}
-                                    onChange={(event) => {
-                                        setFormObject((prev) => ({...prev, email : event.target.value}))
+                                onChange={(event) => {
+                                        
+                                    const newFormObject: FormElements["userObject"] = { ...formObject, email: event.target.value };
+                                    saveFormObject(newFormObject);
                                     }}
                                 />
                             </Grid>
@@ -117,8 +106,10 @@ export function Signup() {
                                     id="phoneNumber"
                                     autoComplete="phoneNumber"
                                     value={formObject?.phoneNumber}
-                                    onChange={(event) => {
-                                        setFormObject((prev) => ({...prev, phoneNumber : event.target.value}))
+                                onChange={(event) => {
+                                        
+                                    const newFormObject: FormElements["userObject"] = { ...formObject, phoneNumber: event.target.value };
+                                    saveFormObject(newFormObject);
                                     }}
                                 />
                             </Grid>

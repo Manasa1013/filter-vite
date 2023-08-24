@@ -7,18 +7,14 @@ import { useToast } from '../Contexts/ToastContext';
 export interface ToastProps {
     message : string
 }
-export function Toast({message }) {
-    const { open, showToast, hideToast } = useToast();
+export const Toast : React.FC<ToastProps>  = ({ message }) => {
+    const { open,  hideToast } = useToast();
 
-  const handleClick = () => {
-      showToast();
-  };
+  // const handleClick : () => void = () => {
+  //     showToast();
+  // };
 
-  const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
+  const handleClose : () => void = () => {
       hideToast();
   };
 

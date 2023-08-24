@@ -2,17 +2,17 @@ import React, { createContext, ReactNode, useContext, useState } from "react";
 
 // types
 type Open = boolean;
-export type ToastContextType = {
+export interface ToastContextInterface  {
     open: Open;
     hideToast: () => void;
     showToast: () => void;
 };
-export type ToastProviderProps = {
+export interface ToastProviderProps  {
   children: ReactNode;
 };
 
 // Toast context
-export const ToastContext = createContext<ToastContextType | undefined>(
+export const ToastContext = createContext<ToastContextInterface | undefined>(
   undefined
 );
 export const useToast = () => {
