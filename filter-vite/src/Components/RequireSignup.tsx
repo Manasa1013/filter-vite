@@ -1,11 +1,18 @@
+import { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router";
 
-export function RequireSignup({ children  }) {
+export interface RequireSignupProps {
+  children : ReactNode
+}
+export const  RequireSignup : React.FC<RequireSignupProps> = ({ children }) => {
   const location = useLocation();
-//   if () console.log(location);
-//   return  ? (
-//     <>{children}</>
-//   ) : (
-//     <Navigate to="/redirect" state={{ from: location }} />
-//   );
+  const isToken = localStorage?.getItem("formObject");
+  return (
+    <>
+      {
+        isToken ? <>{children}</> : (<Navigate to="/redirect" state={{from : location}} />)
+      }
+    </>
+  )
+
 }
