@@ -1,4 +1,4 @@
-import React , { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 import {Box} from '@mui/material';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
