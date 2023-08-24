@@ -7,10 +7,7 @@ export default defineConfig({
     // generate manifest.json in outDir
     target: 'esnext', // or 'modules'
     manifest: true,
-    rollupOptions: {
-      // overwrite default .html entry
-      input: '/path/to/main.tsx',
-    },
+   
   },
   plugins: [react()],
 })
