@@ -5,6 +5,7 @@ import { Signup } from "./Components/Signup";
 import { Posts } from './Components/Posts';
 import { Toast } from './Components/Toast';
 import { RequireSignup } from './Components/RequireSignup';
+import { Department} from "./Components/Departments"
 import { Redirect } from './Pages/Redirect';
 import { useToast } from './Contexts/ToastContext';
 import './App.css'
@@ -25,7 +26,8 @@ function App() {
           <Route path="/" element={<Signup />}></Route>
           
           <Route path="/posts" element={
-            <RequireSignup><Posts /></RequireSignup>}></Route>
+            <RequireSignup><Posts /><Department /></RequireSignup>}></Route>
+          
           <Route path="*" element={<Signup />}></Route>
           <Route path="/redirect" element={<Redirect />}></Route>
         </Routes>

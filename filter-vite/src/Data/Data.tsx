@@ -1,10 +1,11 @@
 
 export interface Sub_DepInterface {
-    sub_dep: string;
-    isChecked: boolean;
+    id: number,
+    name: string,
+    isSelected : boolean
 }
 export interface DepartmentInterface {
-    dep: string; isChecked: boolean;
+    id : number, name : string, isSelected : boolean,
     sub_deps : Sub_DepInterface[]
 }
 
@@ -31,12 +32,12 @@ export  const departmentData = [
 ];
     
 export const newDepartments = departmentData
-        ?.map(({ department, sub_departments }) => (
+        ?.map(({ department, sub_departments },index) => (
             {
-                "dep": department, isChecked: false,
-                "sub_deps":
-                sub_departments?.map(sub_department =>
-                    ({ "sub_dep": sub_department, isChecked: false })
+                id : index +1,  name: department, isSelected: false,
+                subDepartments : 
+                sub_departments?.map((sub_department,index) =>
+                    ({ id : index + 1, name: sub_department, isSelected: false })
                 )
             }
         ));
